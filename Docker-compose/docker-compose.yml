@@ -1,0 +1,51 @@
+version: "3.9"
+
+
+services:
+
+
+
+  node_a:
+    build: ../nosqlsytem/.
+    container_name: nodeA
+    ports:
+      - "4002:4002"
+    environment:
+      NODE_NUMBER: "1"
+      PORT_NUMBER: "4002"
+      SECRET_KEY: "secret"
+    volumes:
+      - nodeA:/databases
+
+
+  node_b:
+    build: ../nosqlsytem/.
+    container_name: nodeB
+    ports:
+      - "4003:4003"
+    environment:
+      NODE_NUMBER: "2"
+      PORT_NUMBER: "4003"
+      SECRET_KEY: "secret"
+    volumes:
+      - nodeB:/databases
+
+
+  bootstrap:
+    build: ../BootstrapNode/.
+    container_name: bootstrap
+    ports:
+      - "4001:4001"
+    environment:
+      PORT_NUMBER: "4001"
+      SECRET_KEY: "secret"
+      NUMBER_OF_NODES: "2"
+      NODE_1: "host.docker.internal/4002"
+      NODE_2: "host.docker.internal/4003"
+      WRITE_AFFINITY_NODE_NUMBER: "1"
+
+volumes:
+   nodeA:
+    external: false
+   nodeB:
+     external: false
